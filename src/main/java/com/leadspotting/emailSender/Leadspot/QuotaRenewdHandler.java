@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.leadspotting.commons.models.AppId;
 import com.leadspotting.commons.models.SendEmailRequest;
@@ -23,9 +24,13 @@ public class QuotaRenewdHandler implements Handler {
 		SniperDB.connectToDB();
 		new QuotaRenewdHandler().handle(SniperDB.getConnectionFromPool());
 	}
+
 	@Override
 	public void handle(Connection c) {
-		List<Client> allClients = new LinkedList<Client>();
+		List<Client> allClients = CommonQueries.getAppClients(c, AppId.LeadSpot);
+		// removing LeadsPortal Clients
+		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadPortal))
+				.collect(Collectors.toList());
 		LocalDate today = LocalDate.now();
 		for (Client client : allClients) {
 			ClientPlan cp = CommonQueries.getClientPlan(c, client.getId());
@@ -35,9 +40,9 @@ public class QuotaRenewdHandler implements Handler {
 				System.out.println(client);
 				System.out.println(newDate);
 				System.out.println();
-				//				updatePlanEnd(c, cp.getInternalSubscriptionId(), newDate);
-//				updateQuota(c, client.getId());
-
+				updatePlanEnd(c, cp.getInternalSubscriptionId(), newDate);
+				updateQuota(c, client.getId());
+				sendResetSuccessfullEmail(client);
 			}
 
 		}

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.leadspotting.commons.models.AppId;
 import com.leadspotting.commons.models.SendEmailRequest;
 import com.leadspotting.commons.models.Template;
+import com.leadspotting.commons.services.EmailServerClient;
 import com.leadspotting.emailSender.CommonQueries;
 import com.leadspotting.emailSender.SniperDB;
 import com.leadspotting.emailSender.models.Client;
@@ -130,8 +131,7 @@ public class InactiveClientsHandler implements Handler {
 				.setHeader(emailTitle).setRecevier(client.getEmailAddress())
 				.addValue("userName", client.getName()).addValue("appURL", AppId.getAppDefaultHost(AppId.LeadSpot))
 				.build();
-		System.out.println(request);
-//		EmailServerClient.sendRequest(request);
+		EmailServerClient.sendRequest(request);
 	}
 
 	public boolean checkClientActivity(Connection c, int clientId, LocalDate since) {

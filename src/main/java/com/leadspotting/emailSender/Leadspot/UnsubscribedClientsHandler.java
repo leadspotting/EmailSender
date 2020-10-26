@@ -40,7 +40,7 @@ public class UnsubscribedClientsHandler implements Handler {
 			if (currentPlan.getPlan().getId() > 1)
 				continue;
 			if (lastWeek.isEqual(unsubscribedDate) || lastMonth.isEqual(unsubscribedDate)) {
-
+				sendUnsubscribedEmail(client);
 			}
 		}
 	}
