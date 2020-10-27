@@ -1,6 +1,12 @@
-package com.leadspotting.emailSender.Leadspot;
+package com.leadspotting.emailSender;
 
 import java.sql.Connection;
+
+import com.leadspotting.emailSender.LeadsOnDemand.NoProjectHandler;
+import com.leadspotting.emailSender.Leadspot.ClientsPlansHandler;
+import com.leadspotting.emailSender.Leadspot.InactiveClientsHandler;
+import com.leadspotting.emailSender.Leadspot.QuotaRenewdHandler;
+import com.leadspotting.emailSender.Leadspot.UnsubscribedClientsHandler;
 
 public interface Handler {
 	/**
@@ -20,6 +26,8 @@ public interface Handler {
 			return new UnsubscribedClientsHandler();
 		case 4: 
 			return new QuotaRenewdHandler();
+		case 5:
+			return new NoProjectHandler();
 		default:
 			throw new IllegalArgumentException("Provided handler id is not associated with a handler");
 		}

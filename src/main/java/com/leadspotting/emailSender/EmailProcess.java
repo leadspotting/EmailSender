@@ -1,4 +1,4 @@
-package com.leadspotting.emailSender.Leadspot;
+package com.leadspotting.emailSender;
 
 import java.io.Closeable;
 import java.sql.Connection;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import com.leadspotting.emailSender.SniperDB;
+import com.leadspotting.emailSender.Leadspot.ProcessTimeNotArrived;
 
 public class EmailProcess implements Closeable, Runnable {
 	private int id;

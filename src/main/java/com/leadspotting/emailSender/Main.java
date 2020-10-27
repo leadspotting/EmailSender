@@ -1,6 +1,5 @@
 package com.leadspotting.emailSender;
 
-import com.leadspotting.emailSender.Leadspot.EmailProcess;
 import com.leadspotting.emailSender.Leadspot.ProcessTimeNotArrived;
 
 public class Main {

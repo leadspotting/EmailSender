@@ -14,6 +14,7 @@ import com.leadspotting.commons.models.SendEmailRequest;
 import com.leadspotting.commons.models.Template;
 import com.leadspotting.commons.services.EmailServerClient;
 import com.leadspotting.emailSender.CommonQueries;
+import com.leadspotting.emailSender.Handler;
 import com.leadspotting.emailSender.SniperDB;
 import com.leadspotting.emailSender.models.Client;
 import com.leadspotting.emailSender.models.ClientPlan;
