@@ -69,7 +69,7 @@ public class QuotaRenewdHandler implements Handler {
 				int leadGeneration = res.getInt("lead_generation");
 				int linkedIn = res.getInt("linkedin_plugin_exports");
 				int companySearch = res.getInt("company_search");
-				int contactDiscovery = res.getInt("contact_discovery");
+				int contactDiscovery = res.getInt("company_contact_discovery");
 				saveQuotaToHistory(c, clientId, contactEnrichment, leadGeneration, linkedIn, companySearch,
 						contactDiscovery);
 				resetQuota(c, clientId);
@@ -112,7 +112,7 @@ public class QuotaRenewdHandler implements Handler {
 	}
 
 	public void updatePlanEnd(Connection c, int internalSubscriptionId, LocalDate newDate) {
-		final String query = "UPDATE lead_spot.client_plan SET end_date = ? WHERE internal_subscription_id = ?";
+		final String query = "UPDATE lead_spot.client_plan SET plan_end = ? WHERE internal_subscription_id = ?";
 		try (PreparedStatement stmt = c.prepareStatement(query)) {
 			stmt.setDate(1, Date.valueOf(newDate));
 			stmt.setInt(2, internalSubscriptionId);

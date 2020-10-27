@@ -23,7 +23,7 @@ public class NoProjectHandler implements Handler {
 		lastWeek = now.minusWeeks(1);
 		lastMonth = now.minusMonths(1);
 	}
-
+	
 	@Override
 	public void handle(Connection c) {
 		List<Client> allClients = CommonQueries.getAppClients(c, AppId.LeadPortal);
@@ -60,6 +60,7 @@ public class NoProjectHandler implements Handler {
 				.setTemplate(Template.REGISTERED_BUT_INACTIVE).setHeader("Reminder for using LeadsOnDemand")
 				.setRecevier(client.getEmailAddress()).addValue("userName", client.getName())
 				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadPortal)).build();
+		System.out.println(request);
 		EmailServerClient.sendRequest(request);
 	}
 
@@ -69,6 +70,7 @@ public class NoProjectHandler implements Handler {
 				.setHeader("Reminder to start using LeadsOnDemand").setRecevier(client.getEmailAddress())
 				.addValue("userName", client.getName()).addValue("appURL", AppId.getAppDefaultHost(AppId.LeadPortal))
 				.build();
+		System.out.println(request);
 		EmailServerClient.sendRequest(request);
 	}
 
@@ -76,6 +78,7 @@ public class NoProjectHandler implements Handler {
 		final String query = "SELECT creation_time FROM leads_portal.project WHERE client_id = ? ORDER BY id DESC LIMIT 1";
 		try (PreparedStatement stmt = c.prepareStatement(query)) {
 			stmt.setInt(1, client.getId());
+			System.out.println(stmt.toString());
 			ResultSet res = stmt.executeQuery();
 			if (res.next()) {
 				return res.getDate("creation_time").toLocalDate();
