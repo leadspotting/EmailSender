@@ -20,13 +20,13 @@ import com.leadspotting.emailSender.SniperDB;
 import com.leadspotting.emailSender.models.Client;
 
 public class InactiveClientsHandler implements Handler {
-	private LocalDate yesterday;
+	private LocalDate threeDaysAgo;
 	private LocalDate lastWeek;
 	private LocalDate beforeTwoWeeks;
 	private LocalDate lastMonth;
 	{
 		LocalDate now = LocalDate.now();
-		yesterday = now.minusDays(1);
+		threeDaysAgo = now.minusDays(3);
 		lastWeek = now.minusWeeks(1);
 		beforeTwoWeeks = now.minusWeeks(2);
 		lastMonth = now.minusMonths(1);
@@ -90,7 +90,7 @@ public class InactiveClientsHandler implements Handler {
 	 */
 	private void handleRegisteredInactive(Connection c, List<Client> allClients) {
 
-		List<Client> registeredYesterdayClients = new LinkedList<>();
+		List<Client> registered3DaysAgoClients = new LinkedList<>();
 		List<Client> registeredLastWeekClients = new LinkedList<>();
 		List<Client> registeredLastMonthClients = new LinkedList<>();
 
@@ -101,14 +101,14 @@ public class InactiveClientsHandler implements Handler {
 			if (lastLogin != null)
 				continue;
 
-			if (yesterday.isEqual(registerTime))
-				registeredYesterdayClients.add(client);
+			if (threeDaysAgo.isEqual(registerTime))
+				registered3DaysAgoClients.add(client);
 			if (lastWeek.isEqual(registerTime))
 				registeredLastWeekClients.add(client);
 			if (lastMonth.isEqual(registerTime))
 				registeredLastMonthClients.add(client);
 		}
-		registeredYesterdayClients.forEach(client -> {
+		registered3DaysAgoClients.forEach(client -> {
 //			boolean noActivity = checkClientActivity(c, client.getId(), yesterday);
 //			if (noActivity)
 			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
