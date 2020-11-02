@@ -30,7 +30,7 @@ public class QuotaRenewdHandler implements Handler {
 	public void handle(Connection c) {
 		List<Client> allClients = CommonQueries.getAppClients(c, AppId.LeadSpot);
 		// removing LeadsPortal Clients
-		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadPortal))
+		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadsOnDemand))
 				.collect(Collectors.toList());
 		LocalDate today = LocalDate.now();
 		for (Client client : allClients) {
@@ -51,9 +51,9 @@ public class QuotaRenewdHandler implements Handler {
 
 	public void sendResetSuccessfullEmail(Client client) {
 		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadSpot)
-				.setTemplate(Template.QUOTA_RENEWED).setHeader("LeadSpot Quota Renewed!")
+				.setTemplate(Template.QUOTA_RENEWED).setHeader("Your LeadSpot quota renewed successfully")
 				.setRecevier(client.getEmailAddress()).addValue("userName", client.getName())
-				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadPortal)).build();
+				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadsOnDemand)).build();
 		EmailServerClient.sendRequest(request);
 
 	}

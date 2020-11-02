@@ -1,4 +1,4 @@
-package com.leadspotting.emailSender.Leadspot;
+package com.leadspotting.emailSender;
 
 public class ProcessTimeNotArrived extends Exception {
 	

@@ -48,7 +48,7 @@ public class UnsubscribedClientsHandler implements Handler {
 
 	public void sendUnsubscribedEmail(Client client) {
 		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadSpot)
-				.setTemplate(Template.UNSUBSCRIBED_1_WEEK_1_MONTH).setHeader("We are sorry to see you go...")
+				.setTemplate(Template.UNSUBSCRIBED_1_WEEK_1_MONTH).setHeader("LeadSpot team is missing you")
 				.setRecevier(client.getEmailAddress()).setValues(CollectionsUtils.mapOf("userName", client.getName()))
 				.build();
 		EmailServerClient.sendRequest(request);

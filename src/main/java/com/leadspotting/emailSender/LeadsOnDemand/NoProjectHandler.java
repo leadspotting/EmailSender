@@ -26,7 +26,7 @@ public class NoProjectHandler implements Handler {
 	
 	@Override
 	public void handle(Connection c) {
-		List<Client> allClients = CommonQueries.getAppClients(c, AppId.LeadPortal);
+		List<Client> allClients = CommonQueries.getAppClients(c, AppId.LeadsOnDemand);
 		handleRegisteredButInactive(c, allClients);
 		handleInactive(c, allClients);
 	}
@@ -56,19 +56,19 @@ public class NoProjectHandler implements Handler {
 	}
 
 	private void sendInactiveEmail(Client client) {
-		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadPortal)
+		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadsOnDemand)
 				.setTemplate(Template.REGISTERED_BUT_INACTIVE).setHeader("Reminder for using LeadsOnDemand")
 				.setRecevier(client.getEmailAddress()).addValue("userName", client.getName())
-				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadPortal)).build();
+				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadsOnDemand)).build();
 		System.out.println(request);
 		EmailServerClient.sendRequest(request);
 	}
 
 	private void sendRegisteredButInactive(Client client) {
-		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadPortal)
+		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadsOnDemand)
 				.setTemplate(Template.RegisteredButDidNotCreateProject)
 				.setHeader("Reminder to start using LeadsOnDemand").setRecevier(client.getEmailAddress())
-				.addValue("userName", client.getName()).addValue("appURL", AppId.getAppDefaultHost(AppId.LeadPortal))
+				.addValue("userName", client.getName()).addValue("appURL", AppId.getAppDefaultHost(AppId.LeadsOnDemand))
 				.build();
 		System.out.println(request);
 		EmailServerClient.sendRequest(request);

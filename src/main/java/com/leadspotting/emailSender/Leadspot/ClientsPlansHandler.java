@@ -30,7 +30,7 @@ public class ClientsPlansHandler implements Handler {
 	public void handle(Connection c) {
 		List<Client> allClients = CommonQueries.getAppClients(c, AppId.LeadSpot);
 		// removing LeadsPortal Clients
-		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadPortal))
+		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadsOnDemand))
 				.collect(Collectors.toList());
 		List<Plan> allPlans = CommonQueries.getAllPlans(c);
 		for (Client client : allClients) {
@@ -49,21 +49,21 @@ public class ClientsPlansHandler implements Handler {
 	}
 
 	public void sendPlanPeriodRecommendationEmail(Client client, String currentPlan) {
-		SendEmailRequest request = new SendEmailRequest.Builder().setHeader("Recommendation to upgrade plan")
+		SendEmailRequest request = new SendEmailRequest.Builder().setHeader("Offer to upgrade your LeadSpot plan")
 				.setAppId(AppId.LeadSpot).setTemplate(Template.PLAN_UPGRADE_RECOMMENDATION_PERIOD)
 				.setRecevier(client.getEmailAddress()).addValue("userName", client.getName())
-				.addValue("currentPlan", currentPlan).addValue("appURL", AppId.getAppDefaultHost(AppId.LeadPortal))
+				.addValue("currentPlan", currentPlan).addValue("appURL", AppId.getAppDefaultHost(AppId.LeadsOnDemand))
 				.build();
 		System.out.println(request);
 //		EmailServerClient.sendRequest(request);
 	}
 
 	public void sendPlanTypeRecommendationEmail(Client client, String currentPlan, String recommendedPlan) {
-		SendEmailRequest request = new SendEmailRequest.Builder().setHeader("Recommendation to upgrade plan")
+		SendEmailRequest request = new SendEmailRequest.Builder().setHeader("Offer to upgrade your LeadSpot plan")
 				.setAppId(AppId.LeadSpot).setTemplate(Template.PLAN_UPGRADE_RECOMMENDATION_TYPE)
 				.setRecevier(client.getEmailAddress()).addValue("userName", client.getName())
 				.addValue("currentPlan", currentPlan).addValue("recommendedPlan", recommendedPlan)
-				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadPortal)).build();
+				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadsOnDemand)).build();
 		System.out.println(request);
 
 		EmailServerClient.sendRequest(request);

@@ -1,7 +1,5 @@
 package com.leadspotting.emailSender;
 
-import com.leadspotting.emailSender.Leadspot.ProcessTimeNotArrived;
-
 public class Main {
 	public static void main(String[] args) {
 		int handlerId = -1;

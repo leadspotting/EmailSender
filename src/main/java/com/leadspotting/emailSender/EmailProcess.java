@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import com.leadspotting.emailSender.Leadspot.ProcessTimeNotArrived;
-
 public class EmailProcess implements Closeable, Runnable {
 	private int id;
 	private Handler handler;

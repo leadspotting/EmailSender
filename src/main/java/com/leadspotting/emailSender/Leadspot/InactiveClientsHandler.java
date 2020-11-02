@@ -43,7 +43,7 @@ public class InactiveClientsHandler implements Handler {
 	public void handle(Connection c) {
 		List<Client> allClients = CommonQueries.getAppClients(c, AppId.LeadSpot);
 		// removing LeadsPortal Clients
-		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadPortal))
+		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadsOnDemand))
 				.collect(Collectors.toList());
 		handleRegisteredInactive(c, allClients);
 		handleInactive(c, allClients);
@@ -111,19 +111,19 @@ public class InactiveClientsHandler implements Handler {
 		registeredYesterdayClients.forEach(client -> {
 //			boolean noActivity = checkClientActivity(c, client.getId(), yesterday);
 //			if (noActivity)
-			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Reminder to start using LeadSpot");
+			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
 
 		});
 		registeredLastWeekClients.forEach(client -> {
 //			boolean noActivity = checkClientActivity(c, client.getId(), lastWeek);
 //			if (noActivity)
-			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Reminder to start using LeadSpot");
+			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
 		});
 
 		registeredLastMonthClients.forEach(client -> {
 //			boolean noActivity = checkClientActivity(c, client.getId(), lastMonth);
 //			if (noActivity)
-			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Reminder to start using LeadSpot");
+			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
 		});
 	}
 
