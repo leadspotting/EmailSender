@@ -2,6 +2,7 @@ package com.leadspotting.emailSender;
 
 import java.sql.Connection;
 
+import com.leadspotting.emailSender.Blue12.Blue12WeeklyReportHandler;
 import com.leadspotting.emailSender.LeadsOnDemand.NoProjectHandler;
 import com.leadspotting.emailSender.Leadspot.CRMHandler;
 import com.leadspotting.emailSender.Leadspot.ClientsPlansHandler;
@@ -31,6 +32,8 @@ public interface Handler {
 			return new NoProjectHandler();
 		case 6: 
 			return new CRMHandler();
+		case 7:
+			return new Blue12WeeklyReportHandler();
 		default:
 			throw new IllegalArgumentException("Provided handler id is not associated with a handler");
 		}
