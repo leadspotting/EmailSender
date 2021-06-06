@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,16 +21,16 @@ import com.leadspotting.emailSender.SniperDB;
 import com.leadspotting.emailSender.models.Client;
 
 public class InactiveClientsHandler implements Handler {
-	private LocalDate threeDaysAgo;
-	private LocalDate lastWeek;
-	private LocalDate beforeTwoWeeks;
-	private LocalDate lastMonth;
+//	private LocalDate threeDaysAgo;
+//	private LocalDate lastWeek;
+	private LocalDateTime  beforeTwoWeeks;
+//	private LocalDate lastMonth;
 	{
-		LocalDate now = LocalDate.now();
-		threeDaysAgo = now.minusDays(3);
-		lastWeek = now.minusWeeks(1);
+		LocalDateTime  now = LocalDateTime.now();
+//		threeDaysAgo = now.minusDays(3);
+//		lastWeek = now.minusWeeks(1);
 		beforeTwoWeeks = now.minusWeeks(2);
-		lastMonth = now.minusMonths(1);
+//		lastMonth = now.minusMonths(1);
 
 	}
 
@@ -46,7 +47,7 @@ public class InactiveClientsHandler implements Handler {
 		allClients = allClients.stream().filter(client -> !client.getClientApps().contains(AppId.LeadsOnDemand))
 				.collect(Collectors.toList());
 		handleRegisteredInactive(c, allClients);
-		handleInactive(c, allClients);
+//		handleInactive(c, allClients);
 	}
 
 	
@@ -58,28 +59,28 @@ public class InactiveClientsHandler implements Handler {
 	 * @param c
 	 * @param allClients
 	 */
-	private void handleInactive(Connection c, List<Client> allClients) {
-		List<Client> loggedInBeforeLastMonth = new LinkedList<>();
-		List<Client> loggedInBeforeTwoWeeks = new LinkedList<>();
-		for (Client client : allClients) {
-			LocalDate lastLogin = client.getLastLogin();
-			// this condition indicates that the user has not logged in, which is handled by
-			// the handleRegisteredInactive method.
-			if (lastLogin == null)
-				continue;
-			if (lastLogin.isEqual(lastMonth))
-				loggedInBeforeLastMonth.add(client);
-			if (lastLogin.isEqual(beforeTwoWeeks)) {
-				loggedInBeforeTwoWeeks.add(client);
-			}
-		}
-		loggedInBeforeLastMonth.forEach(client -> {
-			sendEmail(client, Template.INACTIVE_1_MONTH,"Leads are waiting for you in LeadSpot");
-		});
-		loggedInBeforeTwoWeeks.forEach(client -> {
-			sendEmail(client, Template.INACTIVE_2_WEEKS,"Leads are waiting for you in LeadSpot");
-		});
-	}
+//	private void handleInactive(Connection c, List<Client> allClients) {
+//		List<Client> loggedInBeforeLastMonth = new LinkedList<>();
+//		List<Client> loggedInBeforeTwoWeeks = new LinkedList<>();
+//		for (Client client : allClients) {
+//			LocalDate lastLogin = client.getLastLogin();
+//			// this condition indicates that the user has not logged in, which is handled by
+//			// the handleRegisteredInactive method.
+//			if (lastLogin == null)
+//				continue;
+//			if (lastLogin.isEqual(lastMonth))
+//				loggedInBeforeLastMonth.add(client);
+//			if (lastLogin.isEqual(beforeTwoWeeks)) {
+//				loggedInBeforeTwoWeeks.add(client);
+//			}
+//		}
+////		loggedInBeforeLastMonth.forEach(client -> {
+////			sendEmail(client, Template.INACTIVE_1_MONTH,"Leads are waiting for you in LeadSpot");
+////		});
+//		loggedInBeforeTwoWeeks.forEach(client -> {
+//			sendEmail(client, Template.INACTIVE_2_WEEKS,"Leads are waiting for you in LeadSpot");
+//		});
+//	}
 
 	/**
 	 * handles users that did not login to the system at all, and registered exactly
@@ -90,47 +91,56 @@ public class InactiveClientsHandler implements Handler {
 	 */
 	private void handleRegisteredInactive(Connection c, List<Client> allClients) {
 
-		List<Client> registered3DaysAgoClients = new LinkedList<>();
-		List<Client> registeredLastWeekClients = new LinkedList<>();
-		List<Client> registeredLastMonthClients = new LinkedList<>();
-
+//		List<Client> registered3DaysAgoClients = new LinkedList<>();
+//		List<Client> registeredLastWeekClients = new LinkedList<>();
+//		List<Client> registeredLastMonthClients = new LinkedList<>();
+		List<Client> regsiteredTwoWeeksAgoClients = new LinkedList<>();
 		for (Client client : allClients) {
-			LocalDate registerTime = client.getRegisterTime();
+			LocalDateTime registerTime = client.getRegisterTime();
 			LocalDate lastLogin = client.getLastLogin();
 			// if the user logged in to the system, then this handler won't send an email.
 			if (lastLogin != null)
 				continue;
 
-			if (threeDaysAgo.isEqual(registerTime))
-				registered3DaysAgoClients.add(client);
-			if (lastWeek.isEqual(registerTime))
-				registeredLastWeekClients.add(client);
-			if (lastMonth.isEqual(registerTime))
-				registeredLastMonthClients.add(client);
+//			if (threeDaysAgo.isEqual(registerTime))
+//				registered3DaysAgoClients.add(client);
+//			if (lastWeek.isEqual(registerTime))
+//				registeredLastWeekClients.add(client);
+//			if (lastMonth.isEqual(registerTime))
+//				registeredLastMonthClients.add(client);
+			if(beforeTwoWeeks.isEqual(registerTime)) {
+				regsiteredTwoWeeksAgoClients.add(client);
+			}
 		}
-		registered3DaysAgoClients.forEach(client -> {
-//			boolean noActivity = checkClientActivity(c, client.getId(), yesterday);
-//			if (noActivity)
-			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
+		regsiteredTwoWeeksAgoClients.forEach(client ->{
+			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account - don’t miss great business opportunities!");
 
 		});
-		registeredLastWeekClients.forEach(client -> {
-//			boolean noActivity = checkClientActivity(c, client.getId(), lastWeek);
-//			if (noActivity)
-			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
-		});
-
-		registeredLastMonthClients.forEach(client -> {
-//			boolean noActivity = checkClientActivity(c, client.getId(), lastMonth);
-//			if (noActivity)
-			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
-		});
+//		registered3DaysAgoClients.forEach(client -> {
+////			boolean noActivity = checkClientActivity(c, client.getId(), yesterday);
+////			if (noActivity)
+//			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
+//
+//		});
+//		registeredLastWeekClients.forEach(client -> {
+////			boolean noActivity = checkClientActivity(c, client.getId(), lastWeek);
+////			if (noActivity)
+//			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
+//		});
+//
+//		registeredLastMonthClients.forEach(client -> {
+////			boolean noActivity = checkClientActivity(c, client.getId(), lastMonth);
+////			if (noActivity)
+//			sendEmail(client, Template.REGISTERED_BUT_INACTIVE,"Start using your LeadSpot account");
+//		});
 	}
 
 	public void sendEmail(Client client, Template template,String emailTitle) {
 		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadSpot).setTemplate(template)
 				.setHeader(emailTitle).setRecevier(client.getEmailAddress())
 				.addValue("userName", client.getName()).addValue("appURL", AppId.getAppDefaultHost(AppId.LeadSpot))
+				.addValue("extensionURL", "https://chrome.google.com/webstore/detail/ngeodglgpmplepchhghijjncnikifaed")
+				.addValue("tutorialLink", "https://www.youtube.com/watch?v=1rdrQPppJzo")
 				.build();
 		EmailServerClient.sendRequest(request);
 	}

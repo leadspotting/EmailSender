@@ -6,16 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class EmailProcess implements Closeable, Runnable {
 	private int id;
 	private Handler handler;
 
-	private int runIntervalInDays;
-	private LocalDate lastRun;
+	private double runIntervalInDays;
+	private LocalDateTime lastRun;
 
-	public EmailProcess(int id) throws ProcessTimeNotArrived,IllegalArgumentException {
+	public EmailProcess(int id) throws ProcessTimeNotArrived, IllegalArgumentException {
 		this.handler = Handler.getHandlerById(id);
 		this.id = id;
 		populateDataFromDB();
@@ -28,11 +29,13 @@ public class EmailProcess implements Closeable, Runnable {
 	}
 
 	public void checkTime() throws ProcessTimeNotArrived {
-		LocalDate nextRun = lastRun.plusDays(runIntervalInDays);
-		if (nextRun.isAfter(LocalDate.now())) {
-			long daysDiff = lastRun.until(nextRun, ChronoUnit.DAYS);
-			throw new ProcessTimeNotArrived("PROCESS #" + id + " Runtime Not arrived. " + daysDiff + " Days Left");
-
+		System.out.println(lastRun);
+		System.out.println((long) (runIntervalInDays * 60 * 24));
+		LocalDateTime nextRun = lastRun.plusMinutes((long) (runIntervalInDays * 60 * 24));
+		System.out.println("NEXT RUN " + nextRun);
+		if (nextRun.isAfter(LocalDateTime.now())) {
+			long hoursDiff = lastRun.until(nextRun, ChronoUnit.HOURS);
+			throw new ProcessTimeNotArrived("PROCESS #" + id + " Runtime Not arrived. " + hoursDiff + " Hours Left");
 		}
 	}
 
@@ -43,8 +46,8 @@ public class EmailProcess implements Closeable, Runnable {
 			stmt.setInt(1, id);
 			ResultSet res = stmt.executeQuery();
 			if (res.next()) {
-				runIntervalInDays = res.getInt("run_interval_in_days");
-				lastRun = res.getDate("last_run").toLocalDate();
+				runIntervalInDays = res.getDouble("run_interval_in_days");
+				lastRun = res.getTimestamp("last_run").toLocalDateTime();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

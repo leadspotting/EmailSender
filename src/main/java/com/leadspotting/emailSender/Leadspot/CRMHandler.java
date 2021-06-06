@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +20,9 @@ import com.leadspotting.emailSender.SniperDB;
 import com.leadspotting.emailSender.models.Client;
 
 public class CRMHandler implements Handler {
-	private LocalDate lastMonth;
+	private LocalDateTime  lastMonth;
 	{
-		LocalDate now = LocalDate.now();
+		LocalDateTime now = LocalDateTime.now();
 		lastMonth = now.minusMonths(1);
 
 	}
@@ -44,7 +45,7 @@ public class CRMHandler implements Handler {
 		List<Client> noNewLeadsClients = new LinkedList<>();
 		List<Client> hasOverDueClients = new LinkedList<>();
 		for (Client client : clients) {
-			LocalDate registerDate = client.getRegisterTime();
+			LocalDateTime  registerDate = client.getRegisterTime();
 			if (lastMonth.isEqual(registerDate)) {
 				System.out.println(client);
 				boolean crmNotUsed = crmNotUsed(c, client);

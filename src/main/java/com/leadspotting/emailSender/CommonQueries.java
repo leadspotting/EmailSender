@@ -32,6 +32,8 @@ public class CommonQueries {
 		}
 		return plans;
 	}
+	
+	
 
 	public static ClientPlan getClientPlan(Connection c, int clientId) {
 		final String query = "SELECT p.id,p.name,"
@@ -49,7 +51,7 @@ public class CommonQueries {
 				String subscriptionType = res.getString("subscription_type");
 				LocalDate planStart = res.getDate("plan_start").toLocalDate();
 				LocalDate planEnd = res.getDate("plan_end").toLocalDate();
-				
+
 				Plan plan = new Plan();
 				plan.setName(name);
 				plan.setId(planId);
@@ -65,17 +67,24 @@ public class CommonQueries {
 		}
 		return cp;
 	}
+	public static List<Client> getAppUnverfiedClients(Connection c, AppId appId) {
+		return getAppClientsByVerification(c, appId, 0);
+	}
 
 	public static List<Client> getAppClients(Connection c, AppId appId) {
+		return getAppClientsByVerification(c, appId, 1);
+
+	}
+
+	private static List<Client> getAppClientsByVerification(Connection c, AppId appId, int verfied) {
 		final String query = "SELECT u.id, u.name,u.emailAddress,u.lastlogin,u.creation_time,"
-				+ "GROUP_CONCAT(ua2.app_id) apps\r\n"
-				+ "FROM users u\r\n" 
-				+ "INNER JOIN user_apps ua ON u.ID = ua.user_id\r\n"
-				+"LEFT JOIN user_apps ua2 ON u.ID = ua2.user_id\n"
-				+ "WHERE ua.app_id = ? AND u.active = 1 AND u.email_verified = 1 GROUP BY u.ID";
+				+ "GROUP_CONCAT(ua2.app_id) apps\r\n" + "FROM users u\r\n"
+				+ "INNER JOIN user_apps ua ON u.ID = ua.user_id\r\n" + "LEFT JOIN user_apps ua2 ON u.ID = ua2.user_id\n"
+				+ "WHERE ua.app_id = ? AND u.active = 1 AND u.email_verified = ? GROUP BY u.ID";
 		List<Client> clients = new LinkedList<>();
 		try (PreparedStatement stmt = c.prepareStatement(query)) {
 			stmt.setInt(1, appId.getValue());
+			stmt.setInt(2, verfied);
 			System.out.println(stmt.toString());
 			ResultSet res = stmt.executeQuery();
 			while (res.next()) {
@@ -86,10 +95,8 @@ public class CommonQueries {
 				Date lastLogin = res.getDate("lastlogin");
 				if (lastLogin != null)
 					client.setLastLogin(lastLogin.toLocalDate());
-				client.setRegisterTime(res.getDate("creation_time").toLocalDate());
-				List<AppId> apps = Stream.of(res.getString("apps").split(","))
-						.map(Integer::parseInt)
-						.map(AppId::getApp)
+				client.setRegisterTime( res.getTimestamp("creation_time").toLocalDateTime());
+				List<AppId> apps = Stream.of(res.getString("apps").split(",")).map(Integer::parseInt).map(AppId::getApp)
 						.collect(Collectors.toList());
 				client.setClientApps(apps);
 				clients.add(client);
@@ -99,4 +106,5 @@ public class CommonQueries {
 		}
 		return clients;
 	}
+
 }

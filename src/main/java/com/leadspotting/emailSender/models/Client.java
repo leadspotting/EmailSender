@@ -1,6 +1,7 @@
 package com.leadspotting.emailSender.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.leadspotting.commons.models.AppId;
@@ -10,7 +11,7 @@ public class Client {
 	private String name;
 	private String emailAddress;
 	private LocalDate lastLogin;
-	private LocalDate registerTime;
+	private LocalDateTime  registerTime;
 	private List<AppId> clientApps;
 	public int getId() {
 		return id;
@@ -36,10 +37,10 @@ public class Client {
 	public void setLastLogin(LocalDate lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-	public LocalDate getRegisterTime() {
+	public LocalDateTime getRegisterTime() {
 		return registerTime;
 	}
-	public void setRegisterTime(LocalDate registerTime) {
+	public void setRegisterTime(LocalDateTime registerTime) {
 		this.registerTime = registerTime;
 	}
 	public List<AppId> getClientApps() {
