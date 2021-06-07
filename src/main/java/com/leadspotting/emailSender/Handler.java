@@ -4,12 +4,12 @@ import java.sql.Connection;
 
 import com.leadspotting.emailSender.Blue12.Blue12WeeklyReportHandler;
 //import com.leadspotting.emailSender.LeadsOnDemand.NoProjectHandler;
-import com.leadspotting.emailSender.Leadspot.CRMHandler;
-import com.leadspotting.emailSender.Leadspot.ClientsPlansHandler;
+//import com.leadspotting.emailSender.Leadspot.CRMHandler;
+//import com.leadspotting.emailSender.Leadspot.ClientsPlansHandler;
 import com.leadspotting.emailSender.Leadspot.InactiveClientsHandler;
 import com.leadspotting.emailSender.Leadspot.QuotaRenewdHandler;
 import com.leadspotting.emailSender.Leadspot.ResendVerficationEmailHandler;
-import com.leadspotting.emailSender.Leadspot.UnsubscribedClientsHandler;
+//import com.leadspotting.emailSender.Leadspot.UnsubscribedClientsHandler;
 
 public interface Handler {
 	/**
@@ -23,16 +23,16 @@ public interface Handler {
 		switch (id) {
 		case 1:
 			return new InactiveClientsHandler();
-		case 2:
-			return new ClientsPlansHandler();
-		case 3: 
-			return new UnsubscribedClientsHandler();
+//		case 2:
+//			return new ClientsPlansHandler();
+//		case 3: 
+//			return new UnsubscribedClientsHandler();
 		case 4: 
 			return new QuotaRenewdHandler();
 //		case 5:
 //			return new NoProjectHandler();
-		case 6: 
-			return new CRMHandler();
+//		case 6: 
+//			return new CRMHandler();
 		case 7:
 			return new Blue12WeeklyReportHandler();
 		case 8: 
