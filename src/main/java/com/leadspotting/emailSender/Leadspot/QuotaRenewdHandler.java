@@ -43,16 +43,17 @@ public class QuotaRenewdHandler implements Handler {
 				System.out.println();
 				updatePlanEnd(c, cp.getInternalSubscriptionId(), newDate);
 				updateQuota(c, client.getId());
-				sendResetSuccessfullEmail(client);
+				sendResetSuccessfullEmail(client,cp);
 			}
 
 		}
 	}
 
-	public void sendResetSuccessfullEmail(Client client) {
+	public void sendResetSuccessfullEmail(Client client, ClientPlan cp) {
 		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadSpot)
-				.setTemplate(Template.QUOTA_RENEWED).setHeader("Your LeadSpot quota renewed successfully")
+				.setTemplate(Template.QUOTA_RENEWED).setHeader("Your LeadSpot quota is renewed)")
 				.setRecevier(client.getEmailAddress()).addValue("userName", client.getName())
+				.addValue("planType", cp.getSubscriptionType()).addValue("planName", cp.getPlan().getName())
 				.addValue("appURL", AppId.getAppDefaultHost(AppId.LeadsOnDemand)).build();
 		EmailServerClient.sendRequest(request);
 

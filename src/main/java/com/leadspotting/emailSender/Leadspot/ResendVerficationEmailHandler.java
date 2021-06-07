@@ -18,6 +18,7 @@ public class ResendVerficationEmailHandler implements Handler {
 		SniperDB.connectToDB();
 		new ResendVerficationEmailHandler().handle(SniperDB.getConnectionFromPool());
 	}
+
 	@Override
 	public void handle(Connection c) {
 		List<Client> allClients = CommonQueries.getAppUnverfiedClients(c, AppId.LeadSpot);
@@ -26,7 +27,8 @@ public class ResendVerficationEmailHandler implements Handler {
 		for (var client : allClients) {
 			var registerTime = client.getRegisterTime();
 			if (registerTime.isBefore(before30Mins) && registerTime.isAfter(before40Mins)) {
-				sendEmail(client, Template.RESEND_VERFICATION_EMAIL,"Do not forget to join the LeadSpot and start discovering emails!");
+				sendEmail(client, Template.RESEND_VERFICATION_EMAIL,
+						"Do not forget to join the LeadSpot and start discovering emails!");
 			}
 		}
 	}
@@ -35,7 +37,7 @@ public class ResendVerficationEmailHandler implements Handler {
 		var host = AppId.getAppDefaultHost(AppId.LeadSpot);
 		SendEmailRequest request = new SendEmailRequest.Builder().setAppId(AppId.LeadSpot).setTemplate(template)
 				.setHeader(emailTitle).setRecevier(client.getEmailAddress()).addValue("userName", client.getName())
-				.addValue("appURL", host).addValue(host + "/resendVerfication", emailTitle).build();
+				.addValue("appURL", host).addValue("resendEmailVerifyLink", host + "/resendVerfication").build();
 		EmailServerClient.sendRequest(request);
 	}
 
