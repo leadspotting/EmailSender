@@ -55,6 +55,23 @@ public class Blue12WeeklyReportHandler implements Handler {
 		return null;
 	}
 
+	public boolean isSubscribed(Connection c, Client client) {
+		final String query = "SELECT unsubscribed FROM unsubscribed_from_email_clients WHERE client_id = ? ";
+		try (var stmt = c.prepareCall(query)) {
+			stmt.setInt(1, client.getId());
+			var res = stmt.executeQuery();
+			;
+			if (res.next()) {
+				int sub = res.getInt("unsubscribed");
+				return sub != 0;
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public List<Blue12ReportAlert> getPosts(Connection c) {
 		final String query = "SELECT q.postId,q.url,q.headline,q.creation_time,q.longitude,q.latitude\n"
 				+ "FROM post_qualification q\n"
@@ -113,6 +130,8 @@ public class Blue12WeeklyReportHandler implements Handler {
 //		posts.forEach(System.out::println);
 		for (var client : allClients) {
 			var geo = getUserGeo(c, client.getId());
+			if (!isSubscribed(c, client))
+				continue;
 			if (geo == null)
 				continue;
 			var filtered = filterPostsOnGeoLocation(posts, geo);
